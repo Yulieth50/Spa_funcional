@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pago - Lili Stilo</title>
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tienda.css">
+<link rel="stylesheet" href="tema.css">
+<script src="tema.js"></script>
+</head>
+<body>
+
+<div class="header">
+  <a class="logo" href="inicio.html"><img src="img/Rol/logo2.png" alt="">Lili Stilo SPA</a>
+  <div class="header-der">
+    <span>🔒 Pago seguro</span>
+    <button class="tema-btn" type="button" onclick="toggleTema()">🌙</button>
+  </div>
+</div>
+
+<main class="contenedor">
+  <div class="breadcrumb ancho"><a href="inicio.html">Inicio</a> › <a href="carrito.html">Carrito</a> › Pago</div>
+
+  <div class="pasos ancho" aria-label="Pasos de la compra">
+    <div class="paso hecho"><span>✓</span>Carrito</div><i></i>
+    <div class="paso activo" id="paso-pago"><span>2</span>Envío y pago</div><i></i>
+    <div class="paso" id="paso-listo"><span>3</span>Pedido listo</div>
+  </div>
+
+  <!-- ========== IZQUIERDA: ENVÍO, PAGO Y ARTÍCULOS ========== -->
+  <div id="col-izq">
+    <div class="aviso-sesion" id="aviso-sesion" hidden>
+      👤 <b>Inicia sesión para completar tu compra.</b> Tu carrito se conserva.
+      <a href="inicio.html#login" onclick="irALogin(); return false;">Iniciar sesión o crear cuenta ›</a>
+    </div>
+
+    <div class="card">
+      <h3>1. Dirección de envío</h3>
+      <div class="campos">
+        <div class="campo todo"><label for="f-nombre">Nombre completo</label><input id="f-nombre" autocomplete="name" placeholder="Como aparece en tu documento"><div class="error"></div></div>
+        <div class="campo"><label for="f-cedula">Cédula</label><input id="f-cedula" inputmode="numeric" placeholder="Solo números"><div class="error"></div></div>
+        <div class="campo"><label for="f-celular">Celular / WhatsApp</label><input id="f-celular" type="tel" inputmode="tel" autocomplete="tel" placeholder="3001234567"><div class="error"></div></div>
+        <div class="campo todo"><label for="f-correo">Correo</label><input id="f-correo" type="email" autocomplete="email" placeholder="tucorreo@email.com"><div class="error"></div></div>
+        <div class="campo todo"><label for="f-direccion">Dirección y barrio</label><input id="f-direccion" autocomplete="street-address" placeholder="Cra 45 #12-34, apto 201, El Poblado"><div class="error"></div></div>
+        <div class="campo"><label for="f-ciudad">Ciudad</label><input id="f-ciudad" value="Medellín" autocomplete="address-level2"><div class="error"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>2. ¿Cómo quieres pagar?</h3>
+      <div class="metodos">
+        <label class="metodo"><input type="radio" name="metodoPago" value="1" checked><span class="metodo-ico">💵</span><span><b>Efectivo en tienda</b><small>Pagas cuando recoges tu pedido en el spa.</small></span></label>
+        <label class="metodo"><input type="radio" name="metodoPago" value="2"><span class="metodo-ico">📱</span><span><b>Nequi</b><small>Pago en línea por la pasarela de Wompi.</small></span></label>
+        <label class="metodo"><input type="radio" name="metodoPago" value="3"><span class="metodo-ico">🏦</span><span><b>Transferencia Bancolombia</b><small>Pago en línea por la pasarela de Wompi.</small></span></label>
+        <label class="metodo"><input type="radio" name="metodoPago" value="4"><span class="metodo-ico">💳</span><span><b>Tarjeta con Wompi</b><small>Débito o crédito. Lili Stilo no guarda los datos de tu tarjeta.</small></span></label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>3. Artículos del pedido <small>(<span id="n-articulos">0</span>) · <a href="carrito.html">Editar carrito</a></small></h3>
+      <div id="lista-articulos"></div>
+    </div>
+  </div>
+
+  <!-- ========== DERECHA: RESUMEN ========== -->
+  <aside class="resumen" id="col-der">
+    <h3>Resumen del pedido</h3>
+    <div class="resumen-fila"><span>Total de artículos:</span><b id="r-subtotal">$0</b></div>
+    <div class="resumen-fila"><span>Envío:</span><b style="color:var(--success)">Gratis</b></div>
+    <div class="resumen-fila resumen-total"><span>Total</span><span id="r-total">$0</span></div>
+    <button class="btn-pedido" id="btn-enviar" onclick="enviarPedido()">Enviar pedido · <span id="btn-total">$0</span></button>
+    <div class="seguro">
+      <p>🔒 Al enviar el pedido lo registramos y te mostramos cómo pagarlo según el método que elegiste.</p>
+      <p>💬 ¿Necesitas ayuda? <a id="link-ayuda" href="https://wa.me/573217464430" target="_blank" rel="noopener">Escríbenos por WhatsApp ›</a></p>
+    </div>
+  </aside>
+
+  <!-- ========== PEDIDO CONFIRMADO ========== -->
+  <section class="ancho" id="vista-exito" hidden></section>
+
+  <!-- ========== CARRITO VACÍO ========== -->
+  <section class="card ancho" id="vista-vacio" hidden>
+    <div class="vacio"><span class="vacio-ico">🛍</span>No hay artículos para pagar.<br><a href="inicio.html">Volver a la tienda</a></div>
+  </section>
+</main>
+
+<!-- ========== VENTANA "PROCESANDO" ========== -->
+<div class="proceso" id="proceso" hidden>
+  <div class="proceso-card" role="alertdialog" aria-live="polite" aria-labelledby="proceso-titulo">
+    <div class="proceso-anillo" id="proceso-anillo"><img src="img/Rol/logo2.png" alt=""></div>
+    <h2 id="proceso-titulo">Procesando tu pedido…</h2>
+    <p id="proceso-sub">No cierres ni recargues esta página.</p>
+    <ul class="proceso-pasos">
+      <li id="pp1">Verificando tus datos</li>
+      <li id="pp2">Registrando tu compra</li>
+      <li id="pp3">Apartando tus productos</li>
+      <li id="pp4">Preparando el pago seguro</li>
+    </ul>
+    <div class="proceso-barra"><div id="proceso-progreso"></div></div>
+    <div class="proceso-error" id="proceso-error" hidden>
+      <p>Tu carrito sigue guardado. Puedes intentarlo de nuevo o enviarnos el pedido por WhatsApp.</p>
+      <button class="btn-pedido" style="margin:0" onclick="enviarPedido()">Reintentar</button>
+      <a class="btn-wa" id="error-wa" href="https://wa.me/573217464430" target="_blank" rel="noopener">Enviar pedido por WhatsApp</a>
+      <button class="btn-sec" onclick="cerrarProceso()">Volver</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="tienda.js"></script>
+<script>
+  const WOMPI_LINK = 'https://checkout.wompi.co/l/VPOS_XwfPW5';
+  const METODOS = {
+    '1': { nombre:'Efectivo en tienda', enLinea:false },
+    '2': { nombre:'Nequi', enLinea:true },
+    '3': { nombre:'Transferencia Bancolombia', enLinea:true },
+    '4': { nombre:'Tarjeta - Wompi', enLinea:true }
+  };
+  const CAMPOS = ['nombre','cedula','celular','correo','direccion','ciudad'];
+  const $ = id => document.getElementById(id);
+  const espera = ms => new Promise(r => setTimeout(r, ms));
+  const hayBD = typeof supabaseClient !== 'undefined';
+
+  let pendientes = leerCarrito().filter(p => p.seleccionado === false); // no marcados: se quedan en el carrito
+  let carrito = leerCarrito().filter(p => p.seleccionado !== false);
+  let sesion = null;
+  let enviando = false;
+
+  const total = () => carrito.reduce((a, p) => a + p.precio * p.cantidad, 0);
+  const unidades = () => carrito.reduce((a, p) => a + p.cantidad, 0);
+
+  function pintar(){
+    if(!carrito.length){
+      $('col-izq').hidden = true; $('col-der').hidden = true; $('vista-vacio').hidden = false;
+      return;
+    }
+    $('lista-articulos').innerHTML = carrito.map(p => `<div class="art">
+      <img src="${esc(p.imagen)}" alt="" onerror="this.style.visibility='hidden'">
+      <div class="art-info"><div class="art-nombre">${esc(p.nombre)}</div><div class="art-cant">Cantidad: ${p.cantidad} · ${pesos(p.precio)} c/u</div></div>
+      <div class="art-precio">${pesos(p.precio * p.cantidad)}</div>
+    </div>`).join('');
+    $('n-articulos').textContent = unidades();
+    $('r-subtotal').textContent = pesos(total());
+    $('r-total').textContent = pesos(total());
+    $('btn-total').textContent = pesos(total());
+  }
+
+  /* ---------- sesión ---------- */
+  async function revisarSesion(){
+    sesion = null;
+    if(hayBD){
+      try{ const { data: { session } } = await supabaseClient.auth.getSession(); sesion = session; }
+      catch(e){ console.error('Supabase (sesión):', e); }
+    }
+    $('aviso-sesion').hidden = !!sesion;
+    if(sesion){
+      if(!$('f-correo').value) $('f-correo').value = sesion.user.email || '';
+      const meta = sesion.user.user_metadata || {};
+      if(!$('f-nombre').value && meta.nombre) $('f-nombre').value = meta.nombre;
+      if(!$('f-celular').value && meta.telefono) $('f-celular').value = meta.telefono;
+    }
+  }
+  function irALogin(){
+    guardarEnvio();
+    try{ sessionStorage.setItem('liliVolverACheckout', '1'); }catch(e){}
+    window.location.href = 'inicio.html#login';
+  }
+
+  /* ---------- formulario ---------- */
+  function leerFormulario(){
+    const d = {};
+    CAMPOS.forEach(c => d[c] = $('f-' + c).value.trim());
+    const radio = document.querySelector('input[name="metodoPago"]:checked');
+    d.opcion = radio ? radio.value : '1';
+    d.metodo_pago = METODOS[d.opcion].nombre;
+    return d;
+  }
+  // Se recuerda la dirección para la próxima compra (la cédula no se guarda en el navegador)
+  function guardarEnvio(){
+    const d = leerFormulario();
+    try{ localStorage.setItem('liliEnvio', JSON.stringify({ nombre:d.nombre, celular:d.celular, correo:d.correo, direccion:d.direccion, ciudad:d.ciudad })); }catch(e){}
+  }
+  function cargarEnvio(){
+    try{
+      const d = JSON.parse(localStorage.getItem('liliEnvio') || '{}');
+      ['nombre','celular','correo','direccion','ciudad'].forEach(c => { if(d[c]) $('f-' + c).value = d[c]; });
+    }catch(e){}
+  }
+  function marcar(campo, mensaje){
+    const el = $('f-' + campo);
+    el.classList.toggle('mal', !!mensaje);
+    el.parentNode.querySelector('.error').textContent = mensaje || '';
+  }
+  function validar(d){
+    const errores = {
+      nombre: d.nombre.length < 3 ? 'Escribe tu nombre completo.' : '',
+      cedula: /^\d{5,12}$/.test(d.cedula.replace(/[.\s]/g, '')) ? '' : 'Escribe tu cédula, solo números.',
+      celular: /^\d{10}$/.test(d.celular.replace(/[\s\-+()]/g, '').replace(/^57(?=\d{10}$)/, '')) ? '' : 'Escribe un celular de 10 dígitos, por ejemplo 3001234567.',
+      correo: !d.correo || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.correo) ? '' : 'Revisa el correo, por ejemplo nombre@gmail.com.',
+      direccion: d.direccion.length < 6 ? 'Escribe la dirección y el barrio.' : '',
+      ciudad: d.ciudad ? '' : 'Escribe la ciudad.'
+    };
+    let primero = null;
+    CAMPOS.forEach(c => { marcar(c, errores[c]); if(errores[c] && !primero) primero = c; });
+    if(primero){ $('f-' + primero).focus(); aviso('Revisa los datos marcados en rojo.'); return false; }
+    return true;
+  }
+  CAMPOS.forEach(c => $('f-' + c).addEventListener('input', () => marcar(c, '')));
+
+  /* ---------- ventana de proceso ---------- */
+  function abrirProceso(){
+    $('proceso').hidden = false;
+    $('proceso-error').hidden = true;
+    $('proceso-anillo').className = 'proceso-anillo';
+    $('proceso-titulo').textContent = 'Procesando tu pedido…';
+    $('proceso-sub').textContent = 'No cierres ni recargues esta página.';
+    $('proceso-progreso').style.width = '0';
+    [1,2,3,4].forEach(n => $('pp' + n).className = '');
+  }
+  function cerrarProceso(){ $('proceso').hidden = true; }
+  async function paso(n, tarea){
+    const li = $('pp' + n);
+    li.className = 'activo';
+    const inicio = Date.now();
+    try{ await tarea(); }
+    catch(e){ li.className = 'fallo'; throw e; }
+    const falta = 550 - (Date.now() - inicio); // cada paso se alcanza a leer
+    if(falta > 0) await espera(falta);
+    li.className = 'ok';
+    $('proceso-progreso').style.width = (n * 25) + '%';
+  }
+  function mensajePedido(d, guia){
+    const lineas = carrito.map(p => `• ${p.cantidad} x ${p.nombre} — ${pesos(p.precio * p.cantidad)}`).join('\n');
+    return `Hola, quiero hacer este pedido en Lili Stilo SPA${guia ? ' (' + guia + ')' : ''}:\n${lineas}\nTotal: ${pesos(total())}\nPago: ${d.metodo_pago}\nNombre: ${d.nombre}\nCelular: ${d.celular}\nDirección: ${d.direccion}, ${d.ciudad}`;
+  }
+  function mostrarError(d, texto){
+    $('proceso-anillo').className = 'proceso-anillo mal';
+    $('proceso-titulo').textContent = 'No pudimos registrar tu pedido';
+    $('proceso-sub').textContent = texto || 'Hubo un problema de conexión con el sistema.';
+    $('error-wa').href = enlaceWhatsApp(mensajePedido(d));
+    $('proceso-error').hidden = false;
+  }
+
+  /* ---------- base de datos ---------- */
+  // La tabla clientes puede llamar "email" o "correo" a la columna del correo: se prueban las dos
+  async function buscarCliente(correo, telefono){
+    for(const col of ['email', 'correo']){
+      const { data, error } = await supabaseClient.from('clientes').select('id').eq(col, correo).limit(1);
+      if(!error && data && data[0]) return data[0].id;
+    }
+    if(telefono){
+      const { data, error } = await supabaseClient.from('clientes').select('id').eq('telefono', telefono).limit(1);
+      if(!error && data && data[0]) return data[0].id;
+    }
+    return null;
+  }
+  async function crearCliente(nombre, correo, telefono){
+    let ultimo = null;
+    for(const col of ['email', 'correo']){
+      const fila = { nombre, telefono: telefono || null };
+      fila[col] = correo;
+      const { data, error } = await supabaseClient.from('clientes').insert(fila).select('id').single();
+      if(!error && data) return data.id;
+      ultimo = error;
+    }
+    throw ultimo || new Error('No se pudo crear la clienta');
+  }
+  function productoDeLaBD(nombre, lista){
+    const n = sinTildes(nombre);
+    return lista.find(p => sinTildes(p.nombre) === n) || lista.find(p => n && sinTildes(p.nombre).startsWith(n.split(' ')[0])) || null;
+  }
+
+  /* ---------- enviar el pedido ---------- */
+  async function enviarPedido(){
+    if(enviando) return;
+    const d = leerFormulario();
+    cerrarProceso();
+    if(!carrito.length){ aviso('Tu carrito está vacío'); return; }
+    if(!validar(d)) return;
+    if(!sesion) await revisarSesion();
+    if(!sesion){
+      aviso('Inicia sesión para completar tu compra.');
+      $('aviso-sesion').scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
+    guardarEnvio();
+    enviando = true;
+    $('btn-enviar').disabled = true;
+    abrirProceso();
+
+    const guia = 'LILI-' + Date.now().toString().slice(-6);
+    const montoTotal = total();
+    let ventaId = null;
+    try{
+      await paso(1, async () => { await espera(300); });
+
+      await paso(2, async () => {
+        const correo = sesion.user.email;
+        let clienteId = await buscarCliente(correo, d.celular);
+        if(!clienteId) clienteId = await crearCliente(d.nombre, correo, d.celular);
+        const base = { cliente_id: clienteId, empleado_id: null, metodo_pago: d.metodo_pago, total: montoTotal };
+        let r = await supabaseClient.from('ventas')
+          .insert({ ...base, cedula: d.cedula, direccion: d.direccion, ciudad: d.ciudad, estado_envio: 'Empaquetado', numero_guia: guia })
+          .select('id').single();
+        if(r.error){
+          // Si la tabla ventas aún no tiene las columnas de envío, se guarda la venta básica
+          console.warn('Venta con datos de envío rechazada, se guarda la venta básica:', r.error);
+          r = await supabaseClient.from('ventas').insert(base).select('id').single();
+        }
+        if(r.error) throw r.error;
+        ventaId = r.data.id;
+      });
+
+      await paso(3, async () => {
+        const { data: productos, error } = await supabaseClient.from('productos').select('id, nombre, precio, stock');
+        if(error){ console.error('Supabase (productos):', error); return; }
+        const detalle = [];
+        carrito.forEach(p => {
+          const match = productoDeLaBD(p.nombre, productos || []);
+          if(match) detalle.push({ venta_id: ventaId, producto_id: match.id, cantidad: p.cantidad, precio_unitario: p.precio });
+        });
+        if(!detalle.length) return;
+        const { error: e2 } = await supabaseClient.from('ventas_detalle').insert(detalle);
+        if(e2) console.error('Error guardando el detalle de la compra:', e2);
+        for(const it of detalle){
+          const { error: e3 } = await supabaseClient.rpc('descontar_stock', { p_producto_id: it.producto_id, p_cantidad: it.cantidad });
+          if(e3) console.error('Error descontando stock:', e3);
+        }
+      });
+
+      await paso(4, async () => { await espera(300); });
+
+      $('proceso-anillo').className = 'proceso-anillo fin';
+      $('proceso-titulo').textContent = '¡Listo!';
+      $('proceso-sub').textContent = 'Tu pedido quedó registrado.';
+      await espera(650);
+      mostrarExito({ guia, total: montoTotal, datos: d, articulos: carrito.slice() });
+      carrito = [];
+      guardarCarrito(pendientes.map(p => ({ ...p, seleccionado: true })));
+    }catch(e){
+      console.error('Supabase (checkout):', e);
+      mostrarError(d, ventaId ? 'El pedido se creó, pero no pudimos terminar el proceso.' : '');
+    }finally{
+      enviando = false;
+      $('btn-enviar').disabled = false;
+    }
+  }
+
+  /* ---------- pedido confirmado ---------- */
+  function mostrarExito(p){
+    const d = p.datos, enLinea = METODOS[d.opcion].enLinea;
+    const primerNombre = d.nombre.split(/\s+/)[0];
+    const waComprobante = enlaceWhatsApp(`Hola, hice el pedido ${p.guia} por ${pesos(p.total)} (${d.metodo_pago}). Adjunto mi comprobante de pago.`);
+    const waDuda = enlaceWhatsApp(`Hola, tengo una pregunta sobre mi pedido ${p.guia}.`);
+    const pago = enLinea
+      ? `<p>Método elegido: <b>${esc(d.metodo_pago)}</b></p>
+         <p class="pago-monto">${pesos(p.total)}</p>
+         <a class="btn-pedido" href="${WOMPI_LINK}" target="_blank" rel="noopener">Pagar ahora con Wompi ›</a>
+         <p class="mini">Se abre la pasarela segura de Wompi en otra pestaña. Si te pide el valor, escribe ${pesos(p.total)}. Después de pagar, envíanos el comprobante para confirmar tu pedido.</p>
+         <a class="btn-wa" style="margin-top:12px" href="${waComprobante}" target="_blank" rel="noopener">Enviar comprobante por WhatsApp</a>`
+      : `<p>Método elegido: <b>Efectivo en tienda</b></p>
+         <p class="pago-monto">${pesos(p.total)}</p>
+         <p class="mini">Pagas en efectivo cuando recojas tu pedido en el spa. Ten a la mano tu número de pedido <b>${esc(p.guia)}</b>.</p>`;
+
+    $('vista-exito').innerHTML = `
+      <div class="exito-cab">
+        <div class="exito-check">✓</div>
+        <h1>¡Pedido realizado!</h1>
+        <p>Gracias, ${esc(primerNombre)}. ${enLinea ? 'Solo falta completar el pago.' : 'Te esperamos en el spa.'}</p>
+        <span class="guia">Pedido ${esc(p.guia)}</span>
+      </div>
+      <div class="exito-grid">
+        <div class="card">
+          <h3>Estado del pedido</h3>
+          <ol class="linea">
+            <li class="on"><b>Empaquetado</b><span>Estamos preparando tus productos</span></li>
+            ${enLinea
+              ? `<li><b>Enviado</b><span>Sale cuando confirmemos tu pago</span></li>
+                 <li><b>En camino</b><span>${esc(d.direccion)}, ${esc(d.ciudad)}</span></li>`
+              : `<li><b>Listo para recoger</b><span>Te esperamos en el spa</span></li>`}
+            <li><b>Entregado</b></li>
+          </ol>
+          <p class="mini">Si tienes dudas sobre tu pedido, <a href="${waDuda}" target="_blank" rel="noopener">escríbenos por WhatsApp</a> con tu número de pedido.</p>
+        </div>
+        <div class="card"><h3>Pago</h3>${pago}</div>
+        <div class="card dos">
+          <h3>Resumen <small>(${p.articulos.reduce((a, x) => a + x.cantidad, 0)} artículos)</small></h3>
+          ${p.articulos.map(x => `<div class="art"><img src="${esc(x.imagen)}" alt="" onerror="this.style.visibility='hidden'"><div class="art-info"><div class="art-nombre">${esc(x.nombre)}</div><div class="art-cant">Cantidad: ${x.cantidad}</div></div><div class="art-precio">${pesos(x.precio * x.cantidad)}</div></div>`).join('')}
+          <div class="resumen-fila resumen-total"><span>Total</span><span>${pesos(p.total)}</span></div>
+        </div>
+      </div>
+      <div class="exito-acciones">
+        <a class="btn-sec" href="inicio.html#productos">Seguir comprando</a>
+        <a class="btn-sec" href="inicio.html">Ir al inicio</a>
+      </div>`;
+    cerrarProceso();
+    $('col-izq').hidden = true; $('col-der').hidden = true;
+    $('paso-pago').className = 'paso hecho'; $('paso-pago').firstElementChild.textContent = '✓';
+    $('paso-listo').className = 'paso activo';
+    $('vista-exito').hidden = false;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  $('link-ayuda').href = enlaceWhatsApp('Hola, necesito ayuda para terminar mi compra en Lili Stilo SPA.');
+  cargarEnvio();
+  pintar();
+  revisarSesion();
+</script>
+</body>
+</html>

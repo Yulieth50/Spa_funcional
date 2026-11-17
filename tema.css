@@ -1,0 +1,70 @@
+/* Lili Stilo SPA — logo y modo noche (compartido por todas las páginas).
+   El modo noche se activa con <html data-theme="dark">; lo controla tema.js */
+
+/* El logo se muestra completo y redondo en cualquier tamaño */
+img[src$="logo2.png"]{object-fit:cover!important;border-radius:50%}
+
+.tema-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border-mid,#e3c9d2);background:transparent;cursor:pointer;font-size:16px;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;transition:background .2s,transform .15s}
+.tema-btn:hover{background:var(--rose-pale,#F7EBF0)}
+.tema-btn:active{transform:scale(.92)}
+
+/* ───────────── MODO NOCHE ───────────── */
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --plum:#F6DDE6;--plum-soft:#E7BFCC;
+  --rose:#D9738B;--rose-dark:#F0A0B6;--rose-mid:#E8A4B8;--rose-pale:#38222C;
+  --cream:#170E12;--cream-deep:#1F1319;--warm-white:#24161D;
+  --text:#F7ECF0;--text-mid:#D9C0CA;--text-soft:#B195A1;
+  --border:rgba(232,164,184,.14);--border-mid:rgba(232,164,184,.28);
+  --success:#7ED3AC;--success-bg:#173428;--warn:#E9C766;--warn-bg:#3A2F14;--info:#93BDF0;--info-bg:#1A2B44;
+  --bs-body-bg:#24161D;--bs-body-color:#F7ECF0;--bs-border-color:rgba(232,164,184,.25);
+  --bs-secondary-bg:#2C1B23;--bs-tertiary-bg:#2C1B23;
+}
+
+/* Piezas que usan el color ciruela como fondo: conservan un ciruela oscuro con texto claro */
+html[data-theme="dark"] :is(.brand-mark,.why-section,.next-card:not(.next-empty),.cl-avatar,#toast,.ai-fab,.ai-head,.ai-msg.user,.bulk-bar,.view-toggle button.active,.when-chip,.empty-cta,.next-empty .next-btn,.success-actions a:first-child,.bstep.done .bstep-n,.team-book:hover,.social-btn:hover,.ai-chip-accion,.wa-tooltip,.undo-btn,.bulk-cancel-btn){background-color:#4A2033;color:#FBEAF0}
+html[data-theme="dark"] :is(.undo-btn,.bulk-cancel-btn){background-color:transparent}
+html[data-theme="dark"] :is(.ai-close,.ai-head-title){color:#FBEAF0}
+html[data-theme="dark"] .ai-fab:hover{background-color:#7A3149}
+
+/* Botones principales */
+html[data-theme="dark"] :is(.btn-book-nav,.btn-next-step,.btn-add-cart,.btn-srv-book:hover,.btn-brand,.promo-ribbon,.nav-item.active,.srv-filter-chip.active,.upcoming-alert){background:linear-gradient(135deg,#7A3149,#C9637A);color:#fff!important;border-color:transparent}
+html[data-theme="dark"] :is(.testimonial-avatar,.avatar-circle,.resenas-avg){background-image:linear-gradient(135deg,#C9637A,#7A3149)}
+html[data-theme="dark"] :is(.ai-send:hover,.frequent-hint-btn:hover,.btn-login:hover,.bulk-delete-btn:hover,.empty-cta:hover){background-color:#A84C63;color:#fff}
+
+/* Botones blancos sobre fotos: su texto sigue siendo oscuro */
+html[data-theme="dark"] :is(.fav-btn,.btn-white,.upcoming-alert-btn){color:#3D1A2A}
+html[data-theme="dark"] .fav-btn.active{color:#fff}
+
+/* Superficies que tenían blanco fijo */
+html[data-theme="dark"] :is(.cl-back,.srv-filter-chip,.success-actions a,.booking-summary .bs-chip,.cl-icon-btn,.btn-appt-action,.bottom-nav,.main .topbar .search-box){background-color:var(--warm-white)}
+html[data-theme="dark"] #dash-client .client-tab-panel{background:var(--warm-white)}
+html[data-theme="dark"] .modal-content{background:var(--warm-white);color:var(--text)}
+html[data-theme="dark"] .dropdown-menu{background:var(--warm-white)}
+@media(max-width:640px){html[data-theme="dark"] table.tbl.cards tr{background:var(--warm-white)}}
+
+/* Secciones y fondos con degradados claros */
+html[data-theme="dark"] .navbar{background:linear-gradient(90deg,#1D1217,#24161D);border-bottom-color:rgba(232,164,184,.2)}
+html[data-theme="dark"] .hero-left{background:linear-gradient(155deg,#241019 0%,#3D1A2A 60%,#8B3A4E 140%)}
+html[data-theme="dark"] .products-section{background:linear-gradient(180deg,#1F1319 0%,#170E12 100%)}
+html[data-theme="dark"] .testimonials-section{background:linear-gradient(180deg,#170E12 0%,#21131A 50%,#170E12 100%)}
+html[data-theme="dark"] .faq-section{background:linear-gradient(180deg,transparent 0%,rgba(56,34,44,.6) 100%)}
+html[data-theme="dark"] #dash-client{background:linear-gradient(180deg,#2A1820 0,#170E12 300px)}
+html[data-theme="dark"] .team-spec{background:#3E2531}
+html[data-theme="dark"] .team-avatar{background:linear-gradient(135deg,#2C1B23,#3E2531)}
+html[data-theme="dark"] .skel{background:linear-gradient(90deg,#2A1B22 25%,#3A2530 50%,#2A1B22 75%);background-size:200% 100%}
+html[data-theme="dark"] #splash{background:linear-gradient(160deg,#170E12,#24161D)}
+html[data-theme="dark"] .splash-name{color:#F6DDE6}
+html[data-theme="dark"] .splash-bar{background:#3E2531}
+html[data-theme="dark"] footer{background:#0F080B}
+html[data-theme="dark"] .map-wrap iframe{filter:invert(.9) hue-rotate(180deg) brightness(.95) contrast(.9)}
+html[data-theme="dark"] .is-invalid-field{background:#4A1F25!important}
+html[data-theme="dark"] .badge-descanso{background:#33282D;color:#C9B8BF}
+html[data-theme="dark"] .day-card-blocked{background:#3A2F14}
+
+/* Paneles de administradora y trabajadora */
+html[data-theme="dark"] .sidebar{background:radial-gradient(circle at 100% 0%,rgba(232,164,184,.14),transparent 45%),linear-gradient(165deg,#2E1420 0%,#241019 60%,#1B0C13 100%)}
+html[data-theme="dark"] .main .topbar{background:linear-gradient(100deg,#24161D 0%,#2E1B24 100%)}
+html[data-theme="dark"] #login-screen{background:radial-gradient(circle at 12% 15%,rgba(201,99,122,.18) 0%,transparent 42%),radial-gradient(circle at 88% 82%,rgba(201,99,122,.12) 0%,transparent 45%),#170E12}
+html[data-theme="dark"] .bottom-nav button.active{color:#F6DDE6}
+html[data-theme="dark"] .tbl-avatar{background:#3E2531;color:#F6DDE6}

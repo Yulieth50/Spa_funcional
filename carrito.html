@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carrito - Lili Stilo</title>
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tienda.css">
+<style>
+  /* ── Carrito con la distribución del video de referencia ── */
+  :root{--cta:#FB7701;--cta-dark:#E06A00}
+  body{background:var(--warm-white)}
+  .top-negro{justify-content:space-between;padding:8px 6%;gap:18px}
+  .top-negro span{display:flex;align-items:center;gap:8px;line-height:1.25}
+  .top-negro small{display:block;color:#fff;font-size:11.5px;font-weight:400}
+  .header{border-bottom:0;padding:12px 6%}
+  .header .protegido{color:var(--success);font-size:13px;margin-left:14px;font-family:'DM Sans',Arial,sans-serif;font-weight:500}
+  .contenedor{max-width:none;padding:6px 6% 20px;grid-template-columns:minmax(0,1fr) 370px;gap:34px}
+
+  .banner-verde{border-radius:4px;margin-bottom:8px;padding:11px 14px;font-weight:500}
+  .banner-verde span:last-child{font-size:12.5px;font-weight:400}
+  .banner-naranja{border-radius:4px;margin-bottom:6px;padding:11px 14px;align-items:center}
+  .banner-naranja span:nth-child(2){flex:1}
+
+  /* Casillas redondas */
+  .check{appearance:none;-webkit-appearance:none;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--text-soft);margin:0;cursor:pointer;flex-shrink:0;display:inline-grid;place-content:center;background:transparent}
+  .check:checked{background:var(--text);border-color:var(--text)}
+  .check:checked::after{content:'✓';color:var(--warm-white);font-size:12px;font-weight:700;line-height:1}
+
+  .fila-todo{display:flex;align-items:center;justify-content:space-between;padding:14px 4px 12px;font-weight:700;font-size:15px}
+  .fila-todo label{display:flex;align-items:center;gap:12px;cursor:pointer}
+  .fila-todo .menu{color:var(--text-soft);font-size:18px}
+
+  .producto{border-top:0;padding:10px 4px 16px;gap:14px;align-items:center}
+  .producto img{width:96px;height:96px;border-radius:4px}
+  .producto-info{align-self:stretch;display:flex;flex-direction:column;gap:4px}
+  .producto-nombre{font-size:13.5px;color:var(--text-mid)}
+  .producto-nombre span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .variante{font-size:12px;color:var(--text-soft)}
+  .etiqueta-oferta{color:var(--cta);margin:2px 0 0;font-size:12.5px}
+  .fila-precio{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;flex-wrap:wrap}
+  .precio{font-size:17px}
+  .descuento{background:none;border:1px solid var(--cta);color:var(--cta);font-weight:500;font-size:11.5px;padding:0 5px;border-radius:3px}
+  .sel-cant{padding:5px 8px;border:1px solid var(--border-mid);border-radius:4px;background:var(--warm-white);color:var(--text);font-size:13px;font-family:inherit;cursor:pointer}
+  .btn-eliminar{font-size:15px;opacity:.75}
+  .nota-carrito{font-size:13px;color:var(--text-soft);padding:6px 4px 26px;margin:0}
+  .nota-carrito a{color:var(--cta)}
+
+  /* Artículos sugeridos en cuadrícula */
+  .titulo-sug{font-size:17px;font-weight:700;margin:0 0 14px;color:var(--text)}
+  .sug-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px 14px}
+  .sug{min-width:0}
+  .sug img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:4px;background:var(--rose-pale);display:block}
+  .sug-n{font-size:13px;color:var(--text-mid);margin:8px 0 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sug-p{display:flex;align-items:center;justify-content:space-between;gap:6px}
+  .sug-p b{color:var(--cta);font-size:16px}
+  .btn-carrito{width:38px;height:28px;border-radius:16px;border:1px solid var(--text);background:transparent;color:var(--text);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,color .15s}
+  .btn-carrito:hover{background:var(--text);color:var(--warm-white)}
+  .sug-extra{font-size:12px;color:var(--text-soft);margin-top:4px}
+
+  /* Resumen a la derecha, sin recuadro */
+  .resumen{border:0;background:transparent;padding:4px 0 0;top:12px}
+  .resumen h3{font-size:17px;color:var(--text);margin-bottom:12px}
+  .resumen-fila{font-size:14px;color:var(--text-mid);padding:6px 0}
+  .resumen-total{color:var(--text);font-size:18px;border-top:0;margin-top:10px;padding-bottom:0}
+  .nota-total{font-size:12px;color:var(--text-soft);margin:2px 0 0}
+  .btn-pedido{border-radius:28px;font-size:16.5px;padding:13px;margin:16px 0 14px}
+  .seguro p{display:flex;gap:8px;align-items:flex-start;margin:12px 0}
+  .seguro .ico{flex-shrink:0;color:var(--success)}
+  .seguro .gris{color:var(--text-soft);font-size:12.5px}
+  .seguro .gris .ico{color:var(--text-soft)}
+  .seguro h4{margin:14px 0 8px;font-size:13px;color:var(--text-mid);font-weight:500}
+  .logo-pago{height:28px;min-width:50px;border-radius:4px;font-size:11.5px}
+
+  @media (max-width:980px){
+    .contenedor{grid-template-columns:minmax(0,1fr);padding:6px 14px 20px}
+    .top-negro,.header{padding-left:14px;padding-right:14px}
+    .resumen{position:static;order:2}
+    .col-sug{order:3}
+    .sug-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .producto img{width:80px;height:80px}
+    .header .protegido{display:none}
+  }
+</style>
+<link rel="stylesheet" href="tema.css">
+<script src="tema.js"></script>
+</head>
+<body>
+
+<div class="top-negro">
+  <span>🚚 <span><b>Envío gratis</b><small>Especial para ti</small></span></span>
+  <span>🛒 <span><b>Importe mínimo por pedido</b><small>Valor mínimo: $39.000 para el primer pedido</small></span></span>
+  <span>💬 <span><b>¿Necesitas ayuda?</b><small>Escríbenos por WhatsApp</small></span></span>
+</div>
+
+<div class="header">
+  <div style="display:flex;align-items:center;flex-wrap:wrap">
+    <a class="logo" href="inicio.html"><img src="img/Rol/logo2.png" alt="">Lili Stilo SPA</a>
+    <span class="protegido">🔒 Todos los datos están protegidos</span>
+  </div>
+  <div class="header-der">
+    <a href="inicio.html#login">👤 Iniciar sesión / Registrarse</a>
+    <button class="tema-btn" type="button" onclick="toggleTema()">🌙</button>
+  </div>
+</div>
+
+<div class="contenedor">
+  <div class="breadcrumb ancho"><a href="inicio.html">Inicio</a> › Carrito</div>
+
+  <!-- ========== IZQUIERDA: ARTÍCULOS ========== -->
+  <div>
+    <div class="banner-verde"><span>✓ &nbsp;Envío gratis especial para ti</span><span>Oferta exclusiva</span></div>
+    <div class="banner-naranja"><span>🛒</span><span><b>Pedido mín. de $39.000.</b> Solo usuarios nuevos. (reg. $59.000)</span><span>›</span></div>
+
+    <div class="fila-todo">
+      <label><input type="checkbox" class="check" id="checkTodo" onchange="marcarTodo(this.checked)"><span>Seleccionar todo (<span id="numItems">0</span>)</span></label>
+      <span class="menu" aria-hidden="true">☰</span>
+    </div>
+    <div id="listaCarrito"></div>
+    <p class="nota-carrito">ⓘ ¿No encuentras tus artículos? <a href="inicio.html#login">Inicia sesión para revisar tu carrito ›</a></p>
+
+    <div class="col-sug" id="cardSugeridos">
+      <h3 class="titulo-sug">Artículos que tal vez quieras agregar</h3>
+      <div class="sug-grid" id="sugeridos"></div>
+    </div>
+  </div>
+
+  <!-- ========== DERECHA: RESUMEN ========== -->
+  <div class="resumen">
+    <h3>Resumen del pedido</h3>
+    <div class="resumen-fila"><span>Total de artículos:</span><span id="totalArticulos">$0</span></div>
+    <div class="resumen-fila"><span>Descuento de artículo:</span><span id="descuento" style="color:var(--cta)">-$0</span></div>
+    <div class="resumen-fila resumen-total"><span>Total</span><span id="totalFinal">$0</span></div>
+    <p class="nota-total">Consulta el monto final de tu pago en la página siguiente.</p>
+
+    <button class="btn-pedido" id="btnPedido" onclick="irAPagar()">Hacer pedido (<span id="btnCount">0</span>)</button>
+
+    <div class="seguro">
+      <p class="gris"><span class="ico">ⓘ</span><span>La disponibilidad y el precio de los artículos se confirman al finalizar el pedido.</span></p>
+      <p><span class="ico">🔒</span><span>No se te cobrará hasta que revises este pedido en la página siguiente.</span></p>
+      <p><span class="ico">🛡</span><span><b style="color:var(--text)">Opciones de pago seguro</b><br><span class="gris">Los pagos en línea se hacen en la pasarela de Wompi. Lili Stilo no guarda los datos de tu tarjeta.</span></span></p>
+      <h4>Métodos de pago</h4>
+      <div class="logos-pago">
+        <span class="logo-pago" style="color:#1A1F71;font-weight:900;font-style:italic">VISA</span>
+        <span class="logo-pago">🔴🟠</span>
+        <span class="logo-pago" style="background:#DA0081;color:#fff;border-color:#DA0081">Nequi</span>
+        <span class="logo-pago" style="background:#FDDA24;color:#2C2A29;border-color:#FDDA24">Bancolombia</span>
+        <span class="logo-pago">💵 Efectivo</span>
+        <span class="logo-pago" style="background:#B0F2AE;color:#2C2A29;border-color:#B0F2AE">Wompi</span>
+      </div>
+      <p class="gris" style="margin-top:14px"><span class="ico">💬</span><span>¿Dudas con tu pedido? <a id="linkWa" href="https://wa.me/573217464430" target="_blank" rel="noopener">Escríbenos por WhatsApp ›</a></span></p>
+    </div>
+  </div>
+</div>
+
+<script src="tienda.js"></script>
+<script>
+  let carrito = leerCarrito();
+  const ICONO_CARRITO = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11h10.2L20 7H9"/><circle cx="9" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/><path d="M13.5 8.5v4M11.5 10.5h4"/></svg>';
+
+  function opcionesCantidad(cant){
+    const max = Math.max(10, cant);
+    let html = '';
+    for(let n = 1; n <= max; n++) html += `<option value="${n}" ${n === cant ? 'selected' : ''}>Cant. ${n}</option>`;
+    return html;
+  }
+
+  function render(){
+    const lista = document.getElementById('listaCarrito');
+    const marcados = carrito.filter(p => p.seleccionado);
+    let totalOrig = 0, totalFinal = 0, unidades = 0;
+    marcados.forEach(p => {
+      const original = p.precioOriginal > p.precio ? p.precioOriginal : p.precio;
+      totalOrig += original * p.cantidad;
+      totalFinal += p.precio * p.cantidad;
+      unidades += p.cantidad;
+    });
+
+    if(carrito.length === 0){
+      lista.innerHTML = '<div class="vacio"><span class="vacio-ico">🛍</span>Tu carrito está vacío<br><a href="inicio.html">Volver a la tienda</a></div>';
+    } else {
+      lista.innerHTML = carrito.map((p, i) => {
+        const cant = p.cantidad;
+        const original = p.precioOriginal > p.precio ? p.precioOriginal : p.precio;
+        const desc = original > p.precio ? Math.round((1 - p.precio / original) * 100) : 0;
+        return `<div class="producto">
+          <input type="checkbox" class="check" ${p.seleccionado ? 'checked' : ''} onchange="marcar(${i}, this.checked)" aria-label="Incluir ${esc(p.nombre)} en el pedido">
+          <img src="${esc(p.imagen)}" alt="" onerror="this.style.visibility='hidden'">
+          <div class="producto-info">
+            <div class="producto-nombre"><span>${esc(p.nombre)}</span><button class="btn-eliminar" onclick="eliminar(${i})" title="Quitar del carrito" aria-label="Quitar ${esc(p.nombre)} del carrito">🗑️</button></div>
+            <div class="variante">Envío gratis · ${pesos(p.precio)} c/u</div>
+            ${desc ? '<div class="etiqueta-oferta">Gran oferta</div>' : ''}
+            <div class="fila-precio">
+              <span><span class="precio">${pesos(p.precio * cant)}</span>${desc ? ` <span class="precio-viejo">${pesos(original * cant)}</span> <span class="descuento">-${desc}%</span>` : ''}</span>
+              <select class="sel-cant" onchange="cambiarCant(${i}, this.value)" aria-label="Cantidad de ${esc(p.nombre)}">${opcionesCantidad(cant)}</select>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    document.getElementById('numItems').textContent = carrito.length;
+    const todo = document.getElementById('checkTodo');
+    todo.checked = carrito.length > 0 && marcados.length === carrito.length;
+    todo.disabled = carrito.length === 0;
+    document.getElementById('btnCount').textContent = unidades;
+    document.getElementById('btnPedido').disabled = marcados.length === 0;
+    document.getElementById('totalArticulos').textContent = pesos(totalOrig);
+    document.getElementById('descuento').textContent = '-' + pesos(totalOrig - totalFinal);
+    document.getElementById('totalFinal').textContent = pesos(totalFinal);
+    guardarCarrito(carrito);
+    renderSugeridos();
+  }
+
+  function marcar(i, valor){ carrito[i].seleccionado = valor; render(); }
+  function marcarTodo(valor){ carrito.forEach(p => p.seleccionado = valor); render(); }
+  function eliminar(i){ carrito.splice(i, 1); render(); }
+  function cambiarCant(i, v){ carrito[i].cantidad = Math.max(1, parseInt(v, 10) || 1); render(); }
+  function irAPagar(){
+    if(carrito.length === 0){ aviso('Tu carrito está vacío'); return; }
+    if(!carrito.some(p => p.seleccionado)){ aviso('Marca al menos un artículo para hacer el pedido'); return; }
+    guardarCarrito(carrito);
+    window.location.href = 'checkout.html';
+  }
+
+  // Sugeridos: los productos de la tienda que aún no están en el carrito
+  function renderSugeridos(){
+    const enCarrito = carrito.map(p => sinTildes(p.nombre));
+    const libres = CATALOGO_TIENDA.map((s, i) => ({ s, i })).filter(x => !enCarrito.includes(sinTildes(x.s.nombre)));
+    document.getElementById('cardSugeridos').hidden = libres.length === 0;
+    document.getElementById('sugeridos').innerHTML = libres.map(({ s, i }) => `<div class="sug">
+      <img src="${esc(s.imagen)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
+      <p class="sug-n">${esc(s.nombre)}</p>
+      <div class="sug-p"><b>${pesos(s.precio)}</b><button class="btn-carrito" onclick="agregarSugerido(${i})" title="Agregar al carrito" aria-label="Agregar ${esc(s.nombre)} al carrito">${ICONO_CARRITO}</button></div>
+      <div class="sug-extra">Envío gratis</div>
+    </div>`).join('');
+  }
+  function agregarSugerido(i){
+    const s = CATALOGO_TIENDA[i];
+    carrito.push({ nombre: s.nombre, precio: s.precio, precioOriginal: 0, cantidad: 1, imagen: s.imagen, seleccionado: true });
+    render();
+    aviso('Agregado: ' + s.nombre);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  document.getElementById('linkWa').href = enlaceWhatsApp('Hola, tengo una duda con mi pedido en la tienda de Lili Stilo SPA.');
+  render();
+</script>
+</body>
+</html>
