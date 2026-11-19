@@ -2018,6 +2018,7 @@ async function doRegister(){
   const nombreCompleto = name + (lname ? ' ' + lname : '');
 
   // Crear cuenta en Supabase Auth
+  console.log('CORREO QUE VOY A MANDAR:', JSON.stringify(email));
   const { data, error } = await supabaseClient.auth.signUp({
     email: email,
     password: pass,
