@@ -1,0 +1,3 @@
+Integración de GitHub con Taiga
+Proyecto: Spa Lili Stilo
+Módulo: Comunicación y notificaciones
